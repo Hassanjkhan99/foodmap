@@ -1,14 +1,16 @@
 import SchemaBuilder from "@pothos/core";
 import type { AheadClass, Heading, OpenState, SourceType, VenueActionKind } from "@foodmap/domain";
 import { isEnabled } from "@foodmap/config";
+import { appleMapsUrl, googleMapsUrl } from "@foodmap/integrations";
 import type { FoodMapContext } from "./context.js";
-import { signVenueRef } from "./refs.js";
+import { signVenueRef, stableVenueKey } from "./refs.js";
 
 interface ApiAction {
   readonly kind: VenueActionKind;
 }
 interface ApiCandidate {
   readonly ref: string;
+  readonly key: string;
   readonly name: string;
   readonly cuisines: readonly string[];
   readonly openState: OpenState;
@@ -19,6 +21,8 @@ interface ApiCandidate {
   readonly source: SourceType;
   readonly actions: readonly ApiAction[];
   readonly deliveryMenuUrl: string | null;
+  readonly navGoogleUrl: string;
+  readonly navAppleUrl: string;
 }
 interface ApiPayload {
   readonly status: string;
@@ -69,6 +73,7 @@ export function buildSchema() {
   const CandidateRef = builder.objectRef<ApiCandidate>("Candidate").implement({
     fields: (t) => ({
       ref: t.exposeString("ref"),
+      key: t.exposeString("key"),
       name: t.exposeString("name"),
       cuisines: t.exposeStringList("cuisines"),
       openState: t.field({ type: OpenStateEnum, resolve: (c) => c.openState }),
@@ -79,6 +84,8 @@ export function buildSchema() {
       source: t.field({ type: SourceEnum, resolve: (c) => c.source }),
       actions: t.field({ type: [ActionRef], resolve: (c) => c.actions }),
       deliveryMenuUrl: t.string({ nullable: true, resolve: (c) => c.deliveryMenuUrl }),
+      navGoogleUrl: t.exposeString("navGoogleUrl"),
+      navAppleUrl: t.exposeString("navAppleUrl"),
     }),
   });
 
@@ -160,6 +167,7 @@ export function buildSchema() {
           const exp = ctx.now() + REF_TTL_MS;
           const candidates: ApiCandidate[] = result.candidates.map((c) => ({
             ref: signVenueRef({ venueId: c.venue.id, exp }, ctx.refSecret),
+            key: stableVenueKey(c.venue.id, ctx.refSecret),
             name: c.venue.name,
             cuisines: c.venue.cuisines,
             openState: c.venue.openState,
@@ -172,6 +180,8 @@ export function buildSchema() {
             deliveryMenuUrl: c.venue.deliveryBranchRef
               ? ctx.delivery.buildMenuUrl(c.venue.deliveryBranchRef)
               : null,
+            navGoogleUrl: googleMapsUrl({ point: c.venue.point, label: c.venue.name }),
+            navAppleUrl: appleMapsUrl({ point: c.venue.point, label: c.venue.name }),
           }));
 
           return {

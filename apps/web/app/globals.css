@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+/* FoodMap tokens (Liquid Glass / Warm-tinted). Mirrors docs/design/tokens.json. */
+:root {
+  --bg: #fbfaf7;
+  --surface: #ffffff;
+  --surface-sunken: #f2f0ea;
+  --text-primary: #1a1a17;
+  --text-secondary: #5b5850;
+  --border: #e4e0d7;
+  --brand: #e8580c;
+  --brand-pressed: #c6480a;
+  --on-brand: #ffffff;
+  --focus-ring: #1f6feb;
+  --status-open: #1e7a46;
+  --status-closed: #8a8a8a;
+  --status-unknown: #6b6b6b;
+  --marker-selected: #e8580c;
+  --marker-unselected: #3a3a3a;
+  --marker-behind: #b8b4ab;
+  --current-location: #1f6feb;
+
+  /* glass */
+  --glass-tint: rgba(251, 250, 247, 0.68);
+  --glass-highlight: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(20, 19, 15, 0.1);
+  --glass-fallback: #ffffff;
+  --glass-blur: 20px;
+  --glass-radius: 22px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14130f;
+    --surface: #1e1c17;
+    --surface-sunken: #0f0e0b;
+    --text-primary: #f5f2ea;
+    --text-secondary: #b4afa3;
+    --border: #38352d;
+    --brand: #ff7a33;
+    --brand-pressed: #e8580c;
+    --on-brand: #1a1206;
+    --focus-ring: #5b9bff;
+    --status-open: #4fbe7e;
+    --status-closed: #9a968c;
+    --status-unknown: #a5a199;
+    --marker-selected: #ff7a33;
+    --marker-unselected: #d8d4c9;
+    --marker-behind: #6e6a61;
+    --current-location: #5b9bff;
+    --glass-tint: rgba(30, 28, 23, 0.62);
+    --glass-highlight: rgba(255, 255, 255, 0.12);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-fallback: #1e1c17;
+  }
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+*:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Liquid Glass panel — chrome/overlays only. */
+.glass {
+  background: var(--glass-tint);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--glass-radius);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 8px 24px rgba(20, 19, 15, 0.16);
+}
+
+/*
+ * Adaptive Contrast — glass degrades to a solid surface whenever legibility
+ * matters more than the effect: while moving, reduced transparency, higher
+ * contrast, forced colors, or no backdrop-filter support.
+ */
+.glass.solid,
+[data-motion="moving"] .glass,
+[data-motion="slow"] .glass {
+  background: var(--glass-fallback);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: 0 4px 12px rgba(20, 19, 15, 0.12);
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active) {
+  .glass {
+    background: var(--glass-fallback);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--glass-fallback);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

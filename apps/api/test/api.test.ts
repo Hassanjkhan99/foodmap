@@ -23,7 +23,7 @@ const DISCOVER = /* GraphQL */ `
       warnings
       configVersion
       selectionVersion
-      candidates { ref name source aheadClass distanceM deliveryMenuUrl actions { kind } }
+      candidates { ref key name source aheadClass distanceM deliveryMenuUrl navGoogleUrl navAppleUrl actions { kind } }
     }
   }
 `;
@@ -96,5 +96,17 @@ describe("GraphQL API", () => {
     const burger = p.candidates.find((c: any) => c.name === "Burger Town");
     expect(burger.deliveryMenuUrl).toContain("/r/burger-town");
     expect(burger.actions.map((a: any) => a.kind)).toContain("view_menu");
+    expect(burger.navGoogleUrl).toContain("google.com/maps/dir/");
+    expect(burger.navGoogleUrl).toContain("destination=");
+  });
+
+  it("returns a stable per-venue key that is consistent across calls", async () => {
+    const input = { lat: SEED_ORIGIN.lat, lng: SEED_ORIGIN.lng, sessionId: "s1" };
+    const a = await gql(DISCOVER, { input });
+    const b = await gql(DISCOVER, { input });
+    const c0a = a.json.data.foodMapDiscover.candidates[0];
+    const c0b = b.json.data.foodMapDiscover.candidates[0];
+    expect(c0a.key).toBe(c0b.key); // stable identity for client selection
+    expect(c0a.key).not.toBe(c0a.ref); // key is not the actionable ref
   });
 });
