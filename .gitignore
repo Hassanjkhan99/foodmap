@@ -45,3 +45,7 @@ Thumbs.db
 # Local databases / PostGIS dev data
 .pgdata/
 *.sqlite
+
+# Claude Designer working artifacts (bulky pasted uploads); keep the prototype + screenshots
+designer/uploads/
+designer/.thumbnail

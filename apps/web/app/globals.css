@@ -1,57 +1,75 @@
 @import "tailwindcss";
 
-/* FoodMap tokens (Liquid Glass / Warm-tinted). Mirrors docs/design/tokens.json. */
+/* FoodMap design system — ported from the Claude Designer prototype
+   (designer/FoodMap Prototype.dc.html). Tokens mirror docs/design/tokens.json. */
 :root {
   --bg: #fbfaf7;
   --surface: #ffffff;
+  --surface-raised: #ffffff;
   --surface-sunken: #f2f0ea;
   --text-primary: #1a1a17;
   --text-secondary: #5b5850;
+  --text-inverse: #ffffff;
   --border: #e4e0d7;
   --brand: #e8580c;
+  --brand-bright: #ff8a42;
   --brand-pressed: #c6480a;
   --on-brand: #ffffff;
   --focus-ring: #1f6feb;
   --status-open: #1e7a46;
   --status-closed: #8a8a8a;
-  --status-unknown: #6b6b6b;
+  --status-warning: #b26a00;
+  --status-error: #c0392b;
+  --status-info: #1f6feb;
   --marker-selected: #e8580c;
   --marker-unselected: #3a3a3a;
   --marker-behind: #b8b4ab;
   --current-location: #1f6feb;
 
-  /* glass */
   --glass-tint: rgba(251, 250, 247, 0.68);
+  --glass-tint-thin: rgba(255, 255, 255, 0.55);
+  --glass-tint-thick: rgba(251, 250, 247, 0.82);
   --glass-highlight: rgba(255, 255, 255, 0.75);
   --glass-border: rgba(20, 19, 15, 0.1);
+  --glass-shadow: rgba(20, 19, 15, 0.18);
   --glass-fallback: #ffffff;
-  --glass-blur: 20px;
-  --glass-radius: 22px;
+  --glass-scrim: rgba(20, 19, 15, 0.28);
+  --glass-sheen: linear-gradient(165deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.18) 32%, rgba(255, 255, 255, 0) 62%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #14130f;
     --surface: #1e1c17;
+    --surface-raised: #26241e;
     --surface-sunken: #0f0e0b;
     --text-primary: #f5f2ea;
     --text-secondary: #b4afa3;
+    --text-inverse: #14130f;
     --border: #38352d;
     --brand: #ff7a33;
+    --brand-bright: #ff9a5e;
     --brand-pressed: #e8580c;
     --on-brand: #1a1206;
     --focus-ring: #5b9bff;
     --status-open: #4fbe7e;
     --status-closed: #9a968c;
-    --status-unknown: #a5a199;
+    --status-warning: #e0a44b;
+    --status-error: #f0776a;
+    --status-info: #5b9bff;
     --marker-selected: #ff7a33;
     --marker-unselected: #d8d4c9;
     --marker-behind: #6e6a61;
     --current-location: #5b9bff;
     --glass-tint: rgba(30, 28, 23, 0.62);
+    --glass-tint-thin: rgba(38, 36, 30, 0.48);
+    --glass-tint-thick: rgba(20, 19, 15, 0.8);
     --glass-highlight: rgba(255, 255, 255, 0.12);
     --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(0, 0, 0, 0.45);
     --glass-fallback: #1e1c17;
+    --glass-scrim: rgba(0, 0, 0, 0.45);
+    --glass-sheen: linear-gradient(165deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.03) 32%, rgba(255, 255, 255, 0) 60%);
   }
 }
 
@@ -61,6 +79,7 @@ body {
   background: var(--bg);
   color: var(--text-primary);
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 *:focus-visible {
@@ -68,47 +87,104 @@ body {
   outline-offset: 2px;
 }
 
-/* Liquid Glass panel — chrome/overlays only. */
+/* ---- Liquid Glass (chrome/overlays only) ---- */
 .glass {
-  background: var(--glass-tint);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  background-color: var(--glass-tint);
+  background-image: var(--glass-sheen);
+  -webkit-backdrop-filter: blur(26px) saturate(165%);
+  backdrop-filter: blur(26px) saturate(165%);
   border: 1px solid var(--glass-border);
-  border-radius: var(--glass-radius);
-  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 8px 24px rgba(20, 19, 15, 0.16);
+  box-shadow:
+    inset 0 1.5px 0 var(--glass-highlight),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.03),
+    0 10px 30px var(--glass-shadow),
+    0 1px 3px var(--glass-shadow);
+}
+.glass-thin {
+  background-color: var(--glass-tint-thin);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  backdrop-filter: blur(16px) saturate(150%);
+}
+.glass-thick {
+  background-color: var(--glass-tint-thick);
+  -webkit-backdrop-filter: blur(38px) saturate(165%);
+  backdrop-filter: blur(38px) saturate(165%);
 }
 
-/*
- * Adaptive Contrast — glass degrades to a solid surface whenever legibility
- * matters more than the effect: while moving, reduced transparency, higher
- * contrast, forced colors, or no backdrop-filter support.
- */
+/* Adaptive Contrast — glass degrades to a solid surface whenever legibility
+   outranks the effect. `!important` beats any inline glass. */
 .glass.solid,
 [data-motion="moving"] .glass,
 [data-motion="slow"] .glass {
-  background: var(--glass-fallback);
+  background-color: var(--glass-fallback) !important;
+  background-image: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  box-shadow: 0 4px 12px rgba(20, 19, 15, 0.12) !important;
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active) {
+  .glass,
+  .glass-thin,
+  .glass-thick {
+    background-color: var(--glass-fallback) !important;
+    background-image: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass,
+  .glass-thin,
+  .glass-thick {
+    background-color: var(--glass-fallback);
+  }
+}
+
+/* Frosted warm chip (used over hero imagery). */
+.frost-chip {
+  background: rgba(255, 224, 196, 0.16);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 214, 178, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 236, 220, 0.22);
+  color: #fff;
+}
+[data-motion="moving"] .frost-chip,
+[data-motion="slow"] .frost-chip {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-  box-shadow: 0 4px 12px rgba(20, 19, 15, 0.12);
+  background: rgba(0, 0, 0, 0.42);
 }
 
-@media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active) {
-  .glass {
-    background: var(--glass-fallback);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
+/* Ambient background wash for the radar surface. */
+.ambient {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--brand) 12%, transparent), transparent 45%),
+    radial-gradient(circle at 85% 12%, color-mix(in srgb, var(--current-location) 12%, transparent), transparent 45%);
 }
 
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass {
-    background: var(--glass-fallback);
-  }
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes fm-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.55;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
   }
 }
