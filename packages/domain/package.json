@@ -1,0 +1,17 @@
+{
+  "name": "@foodmap/domain",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./geo": "./src/geo/index.ts",
+    "./motion": "./src/motion/index.ts",
+    "./location": "./src/location/index.ts",
+    "./discovery": "./src/discovery/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -b",
+    "test": "vitest run"
+  }
+}

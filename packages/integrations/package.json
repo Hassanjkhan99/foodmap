@@ -1,0 +1,16 @@
+{
+  "name": "@foodmap/integrations",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./ports": "./src/ports.ts"
+  },
+  "scripts": { "typecheck": "tsc -b", "test": "vitest run" },
+  "dependencies": {
+    "@foodmap/domain": "workspace:*",
+    "@foodmap/config": "workspace:*",
+    "@foodmap/test-fixtures": "workspace:*"
+  }
+}

@@ -57,7 +57,29 @@ Start at **[docs/README.md](docs/README.md)** — the index for product, design,
 ADRs, flows, and operations. This repository is currently **design + Phase 0 planning**; the
 runnable MVP is built in later phases tracked as GitHub issues.
 
+## Development
+
+Zero-key: no external credentials are required for local development or CI.
+
+```bash
+pnpm install     # Node >=22, pnpm 11
+pnpm typecheck   # tsc -b across the workspace
+pnpm test        # vitest — deterministic unit + integration tests
+```
+
+Workspace packages built so far (the framework-free logic core):
+
+| Package | Contents |
+|---|---|
+| `@foodmap/domain` | pure geometry (haversine, bearing, polyline, route projection), heading + motion estimators, foreground **location state machine**, and the deterministic **discovery pipeline** |
+| `@foodmap/config` | typed runtime config + kill switches (Zod) |
+| `@foodmap/test-fixtures` | seeded venues + deterministic **simulated location driver** |
+| `@foodmap/integrations` | ports/adapters — fixture catalog, **mock Herald `DeliveryPlatformClient`**, safe nav-URL builders, memory analytics sink, and the **radar discovery service** |
+
+`apps/web` (PWA) and `apps/api` (GraphQL) are the next milestones.
+
 ## Status
 
-Phase 0 (product + architecture + design handoff). See
+Phase 0 complete; **Phase 1 logic core** landed (discovery, location, geometry, adapters —
+60 tests green). App/API layers in progress. See
 [docs/product/implementation-phases.md](docs/product/implementation-phases.md).
