@@ -5,6 +5,7 @@
     { "path": "./packages/config" },
     { "path": "./packages/test-fixtures" },
     { "path": "./packages/integrations" },
+    { "path": "./packages/db" },
     { "path": "./apps/api" }
   ]
 }
