@@ -8,8 +8,10 @@ const yoga = createFoodMapYoga();
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function handler(request: Request): Response | Promise<Response> {
-  return yoga.fetch(request);
+// Use Yoga's handleRequest so the Next App Router route handler receives a
+// proper Response (with fetchAPI.Response set in createFoodMapYoga).
+function handler(request: Request, ctx: unknown): Response | Promise<Response> {
+  return yoga.handleRequest(request, ctx as never);
 }
 
 export { handler as GET, handler as POST, handler as OPTIONS };

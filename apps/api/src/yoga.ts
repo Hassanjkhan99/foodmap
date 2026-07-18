@@ -11,6 +11,10 @@ export function createFoodMapYoga(options: BuildContextOptions = {}) {
     schema: buildSchema(),
     context: () => buildContext(options),
     graphqlEndpoint: "/api/graphql",
+    // Use the host's global Response (Next/Vercel serverless) so returned
+    // responses are the class the route handler expects. Without this, Vercel's
+    // Node runtime rejects Yoga's ponyfilled Response ("No response is returned").
+    fetchAPI: { Response },
     plugins: [
       {
         onResponse({ response }) {
