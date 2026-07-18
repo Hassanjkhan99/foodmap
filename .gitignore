@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+.pnpm-store/
+
+# Build output
+dist/
+build/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# Test & coverage
+coverage/
+playwright-report/
+test-results/
+.nyc_output/
+
+# Generated code
+**/generated/
+*.gen.ts
+schema.graphql.d.ts
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Local databases / PostGIS dev data
+.pgdata/
+*.sqlite

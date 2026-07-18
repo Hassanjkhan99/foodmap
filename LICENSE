@@ -1,0 +1,15 @@
+FoodMap — Proprietary and Confidential
+Copyright (c) 2026 Norstella / FoodMap. All rights reserved.
+
+This repository is private and unpublished. No license, express or implied, is
+granted to any party except as agreed in writing by the copyright holder.
+
+You may not copy, modify, distribute, sublicense, or use this software except as
+expressly authorized. This software integrates with the Herald food-delivery
+platform strictly over its network API; it does not incorporate Herald's
+AGPL-3.0 core source. See docs/adr/0002-herald-network-adapter-only.md and
+docs/adr/0009-repository-license.md for the licensing rationale.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
