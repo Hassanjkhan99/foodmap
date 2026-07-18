@@ -1,20 +1,30 @@
 name: CI
 
+# Runs before merge only (pull requests to main) + a manual button.
+# No run on direct pushes. Zero-key: no secrets are used or required.
 on:
-  push:
-    branches: [main]
   pull_request:
+    branches: [main]
+  workflow_dispatch:
 
-# Zero-key: no secrets are used or required. External providers stay mocked.
+# Cancel a previous in-progress run on the same PR when new commits arrive,
+# so rapid pushes don't stack up Actions minutes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   build-test:
+    name: build-test
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11.10.0
+      - uses: pnpm/action-setup@v4 # version comes from packageManager in package.json
 
       - uses: actions/setup-node@v4
         with:
