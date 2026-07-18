@@ -54,18 +54,17 @@ CI (`.github/workflows/ci.yml`) runs **only on pull requests to `main`** and via
 private repo. It cancels superseded runs, caps job time, and runs `pnpm typecheck` + `pnpm test`
 with no external credentials.
 
-Because CI is PR-only, **do all work on a branch and open a PR** — a direct push to `main`
-runs no checks:
+`main` is protected by a **repository ruleset**: direct pushes are blocked and the
+**build-test** check must pass before merge. So **do all work on a branch and open a PR**:
 
 1. `git checkout -b <type>/<slug>`
 2. commit; `git push -u origin <branch>`; open a PR to `main`
 3. wait for the **build-test** check to go green
-4. merge once green
+4. merge (checks passing is required by the ruleset)
 
-> Note: a required-check *merge gate* (branch protection / rulesets) is **not** available on
-> GitHub Free for private repos, so green CI is enforced by **discipline**, not by GitHub. See
-> [ADR-0009](docs/adr/0009-repository-license.md) for the private-repo context. If the repo is
-> ever made public or upgraded to Pro, enable a ruleset requiring `build-test`.
+> The repo is **public** (source-available under the proprietary [LICENSE](LICENSE); public
+> visibility grants no reuse rights). Public visibility gives free, unlimited Actions minutes
+> and free branch-protection rulesets. See [ADR-0009](docs/adr/0009-repository-license.md).
 
 ## Commit & PR conventions
 
