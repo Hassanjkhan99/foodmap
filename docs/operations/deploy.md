@@ -24,14 +24,20 @@ with `fetchAPI: { Response }` so Vercel's serverless runtime accepts the returne
 
 ## Environment variables
 
-- `FOODMAP_REF_SECRET` (optional) — HMAC secret for signed venue refs. Defaults to a dev
-  value; set a real one in Production for hygiene.
+- `FOODMAP_REF_SECRET` — HMAC secret for signed venue refs. **Set in Production** (32-byte
+  random, encrypted). Local/CI fall back to a dev default.
 - No provider keys or `DATABASE_URL` needed for the fixture-catalog demo.
 
-## Deploy commands
+## Deploy
+
+The GitHub repo is **connected to the Vercel project** (Git integration), so:
+
+- **push/merge to `main` → production deploy** (auto).
+- **open a PR / push a branch → preview deploy** (auto).
+
+Manual deploys from the repo root remain available:
 
 ```bash
-# from the repo root (project already linked; Root Directory = apps/web)
 vercel deploy --yes           # preview
 vercel deploy --prod --yes    # production
 ```
@@ -43,6 +49,7 @@ viewable. Re-enable in Project → Settings → Deployment Protection if the dem
 
 ## CI vs deploy
 
-GitHub Actions CI (PR-only) runs typecheck + tests + web build + Playwright E2E; it does **not**
-deploy. Deploys are triggered manually via the Vercel CLI above (or connect the Git integration
-later for push-to-deploy).
+GitHub Actions CI (PR-only) runs typecheck + tests + web build + Playwright E2E — the quality
+gate. Vercel's Git integration handles deploys (preview per PR, production per `main` merge).
+The two are independent: CI must pass for the PR to merge (branch ruleset), and the merge then
+triggers the production deploy.
