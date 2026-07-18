@@ -47,6 +47,25 @@ All Herald communication goes through the versioned `DeliveryPlatformClient` ada
 Use the terms in [docs/product/glossary.md](docs/product/glossary.md) consistently. Do **not**
 use restaurant / place / store / branch / location / venue interchangeably.
 
+## Branching, CI & merge flow
+
+CI (`.github/workflows/ci.yml`) runs **only on pull requests to `main`** and via the manual
+"Run workflow" button — not on direct pushes — to conserve GitHub Actions minutes on this
+private repo. It cancels superseded runs, caps job time, and runs `pnpm typecheck` + `pnpm test`
+with no external credentials.
+
+`main` is protected by a **repository ruleset**: direct pushes are blocked and the
+**build-test** check must pass before merge. So **do all work on a branch and open a PR**:
+
+1. `git checkout -b <type>/<slug>`
+2. commit; `git push -u origin <branch>`; open a PR to `main`
+3. wait for the **build-test** check to go green
+4. merge (checks passing is required by the ruleset)
+
+> The repo is **public** (source-available under the proprietary [LICENSE](LICENSE); public
+> visibility grants no reuse rights). Public visibility gives free, unlimited Actions minutes
+> and free branch-protection rulesets. See [ADR-0009](docs/adr/0009-repository-license.md).
+
 ## Commit & PR conventions
 
 - Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`).
