@@ -37,5 +37,14 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Test
+      - name: Unit + integration tests
         run: pnpm test
+
+      - name: Build web (PWA)
+        run: pnpm --filter @foodmap/web build
+
+      - name: Install Playwright browser
+        run: pnpm --filter @foodmap/web exec playwright install --with-deps chromium
+
+      - name: E2E (Playwright, zero-key simulated flow)
+        run: pnpm --filter @foodmap/web e2e

@@ -17,6 +17,15 @@ function b64url(input: Buffer | string): string {
   return Buffer.from(input).toString("base64url");
 }
 
+/**
+ * A stable, opaque per-venue key (no expiry) for client-side identity and
+ * selection across refreshes. Does NOT expose the internal id and is not an
+ * actionable token — use signVenueRef for anything the server must resolve.
+ */
+export function stableVenueKey(venueId: string, secret: string): string {
+  return createHmac("sha256", secret).update(`key.${venueId}`).digest("base64url").slice(0, 16);
+}
+
 export function signVenueRef(payload: VenueRefPayload, secret: string): string {
   const body = b64url(JSON.stringify(payload));
   const sig = createHmac("sha256", secret).update(`${REF_VERSION}.${body}`).digest("base64url");

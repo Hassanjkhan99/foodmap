@@ -28,6 +28,7 @@ test-results/
 **/generated/
 *.gen.ts
 schema.graphql.d.ts
+next-env.d.ts
 
 # Logs
 *.log
