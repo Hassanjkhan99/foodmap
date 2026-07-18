@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#EAE7E0;font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:#1F6FEB}
+  a:hover{color:#1656b8}
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.18);border-radius:8px}
+  @keyframes fm-pulse{0%{transform:scale(1);opacity:0.55}70%{transform:scale(2.2);opacity:0}100%{opacity:0}}
+</style>
+</helmet>
+
+<div style="{{ workspaceStyle }}">
+
+  <div style="{{ railStyle }}">
+    <div style="font:700 15px Inter,sans-serif;color:#1A1A17;letter-spacing:-0.2px">FoodMap</div>
+    <div style="font:500 11px Inter,sans-serif;color:#8A8578;margin-top:-10px">Design spine — clickable prototype</div>
+
+    <div style="{{ railSectionLabelStyle }}">Scenario</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <sc-for list="{{ steps }}" as="s" hint-placeholder-count="5">
+        <div style="{{ s.style }}" onClick="{{ s.onClick }}">{{ s.label }}</div>
+      </sc-for>
+    </div>
+
+    <div style="{{ railSectionLabelStyle }}">Presentation context</div>
+    <div style="display:flex;gap:4px;background:rgba(0,0,0,0.05);padding:4px;border-radius:12px">
+      <sc-for list="{{ contextOptions }}" as="c" hint-placeholder-count="3">
+        <div style="{{ c.style }}" onClick="{{ c.onClick }}">{{ c.label }}</div>
+      </sc-for>
+    </div>
+    <div style="font:400 11px/15px Inter,sans-serif;color:#8A8578">Drives Adaptive Contrast: Moving forces glass → solid, compact rows, 56px targets, motion off. Passenger stays rich. Parked is calmest.</div>
+
+    <div style="{{ railSectionLabelStyle }}">Modes</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <label style="{{ toggleRowStyle }}"><span>Dark mode (S27)</span><input type="checkbox" checked="{{ dark }}" onChange="{{ onToggleDark }}" style="width:36px;height:20px"></label>
+      <label style="{{ toggleRowStyle }}"><span>200% text (S28)</span><input type="checkbox" checked="{{ largeText }}" onChange="{{ onToggleLargeText }}" style="width:36px;height:20px"></label>
+      <label style="{{ mapFailRowStyle }}"><span>Simulate map failure (S24)</span><input type="checkbox" checked="{{ mapFailed }}" onChange="{{ onToggleMapFail }}" disabled="{{ mapFailDisabled }}" style="width:36px;height:20px"></label>
+      <label style="{{ toggleRowStyle }}"><span>Compact rich cards</span><input type="checkbox" checked="{{ compactCards }}" onChange="{{ onToggleCompactCards }}" style="width:36px;height:20px"></label>
+    </div>
+
+    <div style="margin-top:auto;font:400 11px/16px Inter,sans-serif;color:#9A9484;border-top:1px solid rgba(0,0,0,0.08);padding-top:14px">
+      Spine covers S1–S3, S6/S7, S14, S16–S17, S11, S24. Route mode, full prefs, S18–S23 degraded variants, and S26 desktop are documented in the handoff but not built this pass.
+    </div>
+  </div>
+
+  <div style="{{ stageStyle }}">
+
+    <sc-if value="{{ showPhoneFrame }}" hint-placeholder-val="{{ true }}">
+      <x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ dark }}" width="{{ 402 }}" height="{{ 874 }}" hint-size="402,874" style="{{ frameShadowStyle }}">
+
+        <sc-if value="{{ showS1 }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ s1WrapStyle }}">
+            <div style="{{ s1HeroWrapStyle }}"></div>
+            <div style="{{ s1ScrimStyle }}"></div>
+            <div style="{{ s1ContentStyle }}">
+              <div style="{{ s1BadgeStyle }}">FoodMap</div>
+              <div style="{{ s1HeadlineStyle }}">Restaurants ahead, matched to how you're getting there.</div>
+              <div style="{{ s1BodyStyle }}">Live results while you drive, walk, or ride — denser detail when you're not moving.</div>
+              <div style="{{ s1FootnoteStyle }}">Uses your location only while FoodMap is open, to find nearby open venues. Nothing is shared until you choose an action.</div>
+              <div style="{{ s1BtnStyle }}" onClick="{{ onContinueS1 }}">Continue</div>
+              <div style="{{ captionStyle }}">fires: app_opened · value_screen_viewed</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showS2 }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ s2WrapStyle }}">
+            <div style="{{ s2TitleStyle }}">Choose how you're getting food</div>
+            <div style="{{ s2SpacerStyle }}"></div>
+            <div style="{{ s2ChoicePanelStyle }}">
+            <div style="{{ s2CardActiveStyle }}" style-hover="{{ s2CardActiveHoverStyle }}" onClick="{{ onStartRadar }}">
+              <div style="{{ s2CardImgStyle }}"></div>
+              <div style="{{ s2CardScrimStyle }}"></div>
+              <div style="{{ s2CardContentStyle }}">
+                <div style="{{ s2CardEyebrowStyle }}">FOOD RADAR</div>
+                <div style="{{ s2CardTitleStyle }}">See what's ahead, live</div>
+                <div style="{{ s2CardBodyStyle }}">Best while moving with no set destination. Ambient candidates sorted by what's coming up next.</div>
+                <div style="{{ s2CardCtaStyle }}">Start Radar →</div>
+              </div>
+            </div>
+            <div style="{{ s2CardDisabledStyle }}">
+              <div style="{{ s2CardEyebrowLightStyle }}">ALONG A ROUTE · Phase 4</div>
+              <div style="{{ s2CardTitleDarkStyle }}">Detour-aware stops on your route</div>
+              <div style="{{ s2CardBodyDarkStyle }}">Set a destination; FoodMap surfaces venues near your path. Not in this pass — see handoff doc.</div>
+            </div>
+            <div style="{{ s2FooterLinkStyle }}">Try demo without location</div>
+            <div style="{{ captionStyle }}">fires: mode_selected {mode: radar}</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showS3 }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ scrimFullStyle }}">
+            <div style="{{ s3SheetStyle }}">
+              <div style="{{ sheetGrabberStyle }}"></div>
+              <div style="{{ s3IconStyle }}">◎</div>
+              <div style="{{ s3TitleStyle }}">Allow location to see what's ahead</div>
+              <div style="{{ s3BodyStyle }}">FoodMap checks your position while the app is open to rank nearby open venues by how soon you'll pass them. You can stop at any time.</div>
+              <div style="{{ s3BtnPrimaryStyle }}" onClick="{{ onAllowLocation }}">Allow location</div>
+              <div style="{{ s3BtnSecondaryStyle }}">Use manual area instead</div>
+              <div style="{{ captionStyle }}">fires: permission_education_viewed → permission_prompt_requested</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ showRadar }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ radarRootStyle }}">
+            <sc-if value="{{ bannerVisible }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ bannerStyle }}">⚠ Map unavailable — showing Ahead instead. <span style="{{ bannerRetryStyle }}">Retry</span></div>
+            </sc-if>
+
+            <div style="{{ filterRowStyle }}">
+              <sc-for list="{{ filterChips }}" as="chip" hint-placeholder-count="3">
+                <div style="{{ chip.style }}">{{ chip.label }}</div>
+              </sc-for>
+            </div>
+
+            <div style="{{ bottomControlsStyle }}">
+              <div style="{{ captionFooterStyle }}">fires: candidate_impression · candidate_selected · view_switched{to: {{ radarView }} }</div>
+              <div style="{{ topBarStyle }}">
+                <div style="{{ segmentedWrapStyle }}">
+                  <sc-for list="{{ radarViewOptions }}" as="rv" hint-placeholder-count="2">
+                    <div style="{{ rv.style }}" onClick="{{ rv.onClick }}">{{ rv.label }}</div>
+                  </sc-for>
+                </div>
+                <div style="{{ stopBtnStyle }}" onClick="{{ onStop }}">Stop</div>
+              </div>
+            </div>
+
+            <sc-if value="{{ showMap }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ mapCanvasStyle }}">
+                <div style="{{ mapTileLabelStyle }}">map (mock)</div>
+                <div style="{{ currentLocationDotStyle }}"><div style="{{ currentLocationConeStyle }}"></div></div>
+                <sc-for list="{{ markers }}" as="m" hint-placeholder-count="4">
+                  <div style="{{ m.wrapStyle }}" onClick="{{ m.onClick }}">
+                    <sc-if value="{{ m.pulse }}" hint-placeholder-val="{{ false }}"><div style="{{ m.pulseStyle }}"></div></sc-if>
+                    <div style="{{ m.pinStyle }}"></div>
+                  </div>
+                </sc-for>
+                <div style="{{ recenterBtnStyle }}">⌖</div>
+                <sc-if value="{{ spotlightVisible }}" hint-placeholder-val="{{ false }}">
+                  <div style="{{ spotlightStyle }}" onClick="{{ spotlightOnClick }}">
+                    <div style="{{ spotlightThumbWrapStyle }}"></div>
+                    <div style="{{ spotlightTextColStyle }}">
+                      <div style="{{ spotlightNameStyle }}">{{ spotlightVenue.name }}</div>
+                      <div style="{{ spotlightMetaStyle }}"><span style="{{ spotlightVenue.statusDotStyle }}"></span>{{ spotlightVenue.metaLine }}</div>
+                    </div>
+                    <div style="{{ spotlightTimeStyle }}">{{ spotlightVenue.minsAhead }}</div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showAhead }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ aheadListStyle }}">
+                <sc-for list="{{ aheadRows }}" as="row" hint-placeholder-count="4">
+                  <sc-if value="{{ row.richCard }}" hint-placeholder-val="{{ false }}">
+                    <div style="{{ row.cardWrapStyle }}" style-hover="{{ row.cardHoverStyle }}" onClick="{{ row.onClick }}">
+                      <div style="{{ row.heroImgStyle }}"></div>
+                      <div style="{{ row.cardScrimStyle }}"></div>
+                      <div style="{{ row.cardTopRowStyle }}">
+                        <div style="{{ row.statusPillStyle }}"><span style="{{ row.statusDotWhiteStyle }}"></span>{{ row.metaLine }}</div>
+                        <div style="{{ row.heartBtnStyle }}" onClick="{{ row.onToggleFav }}">{{ row.favLabel }}</div>
+                      </div>
+                      <div style="{{ row.cardBottomStyle }}">
+                        <div style="{{ row.cardNameRowStyle }}">
+                          <div style="{{ row.cardNameStyle }}">{{ row.name }}</div>
+                          <div style="{{ row.aheadPillStyle }}">{{ row.minsAhead }}</div>
+                        </div>
+                        <div style="{{ row.cardMetaStyle }}">{{ row.sub }}</div>
+                        <sc-if value="{{ row.showTagsActions }}" hint-placeholder-val="{{ true }}">
+                          <div style="{{ row.cardTagsRowStyle }}">
+                            <sc-for list="{{ row.tags }}" as="tag" hint-placeholder-count="2">
+                              <div style="{{ tag.style }}">{{ tag.label }}</div>
+                            </sc-for>
+                          </div>
+                          <div style="{{ row.cardActionsRowStyle }}">
+                            <div style="{{ row.quickNavBtnStyle }}" onClick="{{ row.onQuickNav }}">Navigate</div>
+                            <sc-if value="{{ row.linked }}" hint-placeholder-val="{{ false }}"><div style="{{ row.quickMenuBtnStyle }}" onClick="{{ row.onQuickMenu }}">Menu</div></sc-if>
+                          </div>
+                        </sc-if>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ row.compactCard }}" hint-placeholder-val="{{ false }}">
+                    <div style="{{ row.rowStyle }}" onClick="{{ row.onClick }}">
+                      <div style="{{ row.textColStyle }}">
+                        <div style="{{ row.nameStyle }}">{{ row.name }}</div>
+                        <div style="{{ row.metaStyle }}"><span style="{{ row.statusDotStyle }}"></span>{{ row.metaLine }}</div>
+                      </div>
+                      <div style="{{ row.aheadTimeStyle }}">{{ row.minsAhead }}</div>
+                    </div>
+                  </sc-if>
+                </sc-for>
+              </div>
+            </sc-if>
+
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sheetVisible }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ scrimFullStyle }}" onClick="{{ onCloseSheet }}">
+            <div style="{{ sheetOuterStyle }}" onClick="{{ stopProp }}">
+              <div style="{{ sheetGrabberStyle }}"></div>
+              <sc-if value="{{ sheetVenue.showThumb }}" hint-placeholder-val="{{ false }}">
+                <div style="{{ sheetVenue.thumbWrapStyle }}">
+                  <div style="{{ sheetVenue.thumbImgStyle }}"></div>
+                  <div style="{{ sheetVenue.thumbScrimStyle }}"></div>
+                  <div style="{{ sheetVenue.heartBtnStyle }}" onClick="{{ sheetVenue.onToggleFav }}">{{ sheetVenue.favLabel }}</div>
+                </div>
+              </sc-if>
+              <div style="{{ platesStyle }}">
+                <div style="{{ sheetNameRowStyle }}">
+                  <div style="{{ sheetNameStyle }}">{{ sheetVenue.name }}</div>
+                  <div style="{{ sheetTimeStyle }}">{{ sheetVenue.minsAhead }}</div>
+                </div>
+                <div style="{{ sheetMetaStyle }}"><span style="{{ sheetVenue.statusDotStyle }}"></span>{{ sheetVenue.metaLine }}</div>
+                <sc-if value="{{ sheetVenue.showSub }}" hint-placeholder-val="{{ false }}"><div style="{{ sheetSubStyle }}">{{ sheetVenue.sub }}</div></sc-if>
+                <div style="{{ sheetTagsRowStyle }}">
+                  <sc-for list="{{ sheetVenue.tags }}" as="tag" hint-placeholder-count="2">
+                    <div style="{{ tag.style }}">{{ tag.label }}</div>
+                  </sc-for>
+                </div>
+                <div style="{{ sheetBadgeStyle }}">{{ sheetVenue.sourceBadge }}</div>
+              </div>
+              <div style="{{ sheetActionsRowStyle }}">
+                <div style="{{ sheetNavBtnStyle }}" onClick="{{ onOpenNavChooser }}">Navigate</div>
+                <sc-if value="{{ sheetVenue.linked }}" hint-placeholder-val="{{ false }}"><div style="{{ sheetMenuBtnStyle }}" onClick="{{ onOpenHerald }}">View Menu</div></sc-if>
+              </div>
+              <div style="{{ sheetDismissStyle }}" onClick="{{ onCloseSheet }}">Dismiss</div>
+              <div style="{{ captionStyle }}">fires: candidate_selected</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ navChooserVisible }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ scrimFullStyle }}" onClick="{{ onCancelNav }}">
+            <div style="{{ navSheetStyle }}" onClick="{{ stopProp }}">
+              <div style="{{ sheetGrabberStyle }}"></div>
+              <div style="{{ navTitleStyle }}">Open in</div>
+              <sc-for list="{{ navOptions }}" as="opt" hint-placeholder-count="3">
+                <div style="{{ opt.style }}" onClick="{{ opt.onClick }}">{{ opt.label }}</div>
+              </sc-for>
+              <div style="{{ sheetDismissStyle }}" onClick="{{ onCancelNav }}">Cancel</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ heraldVisible }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ heraldRootStyle }}">
+            <div style="{{ heraldHeaderStyle }}">
+              <div style="{{ heraldBackStyle }}" onClick="{{ onBackToFoodMap }}">‹ Back to FoodMap</div>
+              <div style="{{ heraldWordmarkStyle }}">Herald</div>
+            </div>
+            <div style="{{ heraldVenueNameStyle }}">{{ sheetVenue.name }}</div>
+            <div style="{{ heraldSubStyle }}">Pickup menu</div>
+            <sc-for list="{{ heraldItems }}" as="it" hint-placeholder-count="3">
+              <div style="{{ heraldRowStyle }}">
+                <div style="{{ heraldItemNameStyle }}">{{ it.name }}</div>
+                <div style="{{ heraldItemPriceStyle }}">{{ it.price }}</div>
+              </div>
+            </sc-for>
+            <div style="{{ heraldCtaStyle }}">Start pickup</div>
+            <div style="{{ captionStyle }}">fires: menu_opened {linked:true} · pickup_started</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ toast }}" hint-placeholder-val="{{ null }}">
+          <div style="{{ toastStyle }}">{{ toast }}</div>
+        </sc-if>
+
+      </x-import>
+    </sc-if>
+
+    <sc-if value="{{ showS11 }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ s11FrameStyle }}">
+        <div style="{{ s11HeaderStyle }}">
+          <div style="{{ s11BackStyle }}" onClick="{{ onExitS11 }}">‹ Exit split view</div>
+          <div style="{{ s11TitleStyle }}">Stationary — Map / Ahead split</div>
+          <label style="{{ s11PassengerToggleStyle }}"><input type="checkbox" checked="{{ s11Passenger }}" onChange="{{ onToggleS11Passenger }}" style="width:32px;height:18px">Passenger mode</label>
+        </div>
+        <div style="{{ s11BodyStyle }}">
+          <div style="{{ s11MapPaneStyle }}">
+            <div style="{{ mapTileLabelStyle }}">map (mock)</div>
+            <div style="{{ currentLocationDotStyle }}"><div style="{{ currentLocationConeStyle }}"></div></div>
+            <sc-for list="{{ s11Markers }}" as="m" hint-placeholder-count="4">
+              <div style="{{ m.wrapStyle }}">
+                <sc-if value="{{ m.pulse }}" hint-placeholder-val="{{ false }}"><div style="{{ m.pulseStyle }}"></div></sc-if>
+                <div style="{{ m.pinStyle }}"></div>
+                <div style="{{ m.labelStyle }}">{{ m.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="{{ s11ListPaneStyle }}">
+            <div style="{{ s11FilterRowStyle }}">
+              <sc-for list="{{ filterChips }}" as="chip" hint-placeholder-count="3">
+                <div style="{{ chip.styleRich }}">{{ chip.label }}</div>
+              </sc-for>
+            </div>
+            <sc-for list="{{ s11Rows }}" as="row" hint-placeholder-count="4">
+              <div style="{{ row.cardStyle }}" style-hover="{{ row.cardHoverStyle }}">
+                <div style="{{ row.thumbWrapStyle }}">
+                  <div style="{{ row.thumbImgStyle }}"></div>
+                  <div style="{{ row.thumbBadgeStyle }}">{{ row.minsAhead }}</div>
+                </div>
+                <div style="{{ row.textColStyle }}">
+                  <div style="{{ row.nameRowStyle }}"><div style="{{ row.nameStyle }}">{{ row.name }}</div><div style="{{ row.heartBtnStyle }}" onClick="{{ row.onToggleFav }}">{{ row.favLabel }}</div></div>
+                  <div style="{{ row.metaStyle }}"><span style="{{ row.statusDotStyle }}"></span>{{ row.metaLine }}</div>
+                  <div style="{{ row.subStyle }}">{{ row.sub }}</div>
+                  <div style="{{ row.tagsRowStyle }}">
+                    <sc-for list="{{ row.tags }}" as="tag" hint-placeholder-count="2">
+                      <div style="{{ tag.style }}">{{ tag.label }}</div>
+                    </sc-for>
+                  </div>
+                  <div style="{{ row.actionsRowStyle }}">
+                    <div style="{{ row.navBtnStyle }}">Navigate</div>
+                    <sc-if value="{{ row.linked }}" hint-placeholder-val="{{ false }}"><div style="{{ row.menuBtnStyle }}">View Menu</div></sc-if>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+            <div style="{{ captionStyle }}">fires: passenger_mode_entered · details_opened</div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const LIGHT = {
+  bg:'#FBFAF7', surface:'#FFFFFF', surfaceRaised:'#FFFFFF', surfaceSunken:'#F2F0EA',
+  textPrimary:'#1A1A17', textSecondary:'#5B5850', textInverse:'#FFFFFF', border:'#E4E0D7',
+  brand:'#E8580C', brandPressed:'#C6480A', onBrand:'#FFFFFF', focusRing:'#1F6FEB',
+  statusOpen:'#1E7A46', statusClosed:'#8A8A8A', statusWarning:'#B26A00', statusError:'#C0392B', statusInfo:'#1F6FEB',
+  markerSelected:'#E8580C', markerUnselected:'#3A3A3A', markerBehind:'#B8B4AB', currentLocation:'#1F6FEB',
+};
+const DARK = {
+  bg:'#14130F', surface:'#1E1C17', surfaceRaised:'#26241E', surfaceSunken:'#0F0E0B',
+  textPrimary:'#F5F2EA', textSecondary:'#B4AFA3', textInverse:'#14130F', border:'#38352D',
+  brand:'#FF7A33', brandPressed:'#E8580C', onBrand:'#1A1206', focusRing:'#5B9BFF',
+  statusOpen:'#4FBE7E', statusClosed:'#9A968C', statusWarning:'#E0A44B', statusError:'#F0776A', statusInfo:'#5B9BFF',
+  markerSelected:'#FF7A33', markerUnselected:'#D8D4C9', markerBehind:'#6E6A61', currentLocation:'#5B9BFF',
+};
+const GLASS_LIGHT = { tintThin:'rgba(255,255,255,0.55)', tintRegular:'rgba(251,250,247,0.68)', tintThick:'rgba(251,250,247,0.82)', highlight:'rgba(255,255,255,0.75)', border:'rgba(20,19,15,0.10)', shadow:'rgba(20,19,15,0.18)', fallbackSurface:'#FFFFFF', scrim:'rgba(20,19,15,0.28)' };
+const GLASS_DARK = { tintThin:'rgba(38,36,30,0.48)', tintRegular:'rgba(30,28,23,0.62)', tintThick:'rgba(20,19,15,0.80)', highlight:'rgba(255,255,255,0.12)', border:'rgba(255,255,255,0.10)', shadow:'rgba(0,0,0,0.45)', fallbackSurface:'#1E1C17', scrim:'rgba(0,0,0,0.45)' };
+const VENUES = [
+  { id:'v1', name:'Sable & Rye', minsAhead:'6 min ahead', cuisine:'New American', open:true, rating:4.6, address:'214 Linden Ave', hours:'Open until 10pm', linked:true, x:54, y:36, behind:false, price:'$$', tags:['Patio','Reservations'], heroId:'hero-v1' },
+  { id:'v2', name:'Kome Ramen', minsAhead:'11 min ahead', cuisine:'Japanese', open:true, rating:4.4, address:'88 Harbor St', hours:'Open until 9:30pm', linked:true, x:31, y:58, behind:false, price:'$$', tags:['Counter seating','Takeout'], heroId:'hero-v2' },
+  { id:'v3', name:'Union Coffee Bar', minsAhead:'14 min ahead', cuisine:'Cafe', open:false, rating:4.2, address:'40 Market Sq', hours:'Opens 7am', linked:false, x:70, y:68, behind:false, price:'$', tags:['Espresso','Pastry'], heroId:'hero-v3' },
+  { id:'v4', name:'Basil & Board', minsAhead:'passed', cuisine:'Italian', open:true, rating:4.5, address:'12 Old Mill Rd', hours:'Open until 10pm', linked:true, x:16, y:22, behind:true, price:'$$', tags:['Wine list'], heroId:'hero-v4' },
+];
+const HERALD_ITEMS = [ {name:'Signature Bowl', price:'$14'}, {name:'Side Salad', price:'$6'}, {name:'Iced Tea', price:'$4'} ];
+
+class Component extends DCLogic {
+  state = { screen:'S1', context:'parked', dark:false, largeText:false, radarView:'map', mapFailed:false,
+    selectedVenueId:null, navChooserOpen:false, heraldOpen:false, s11Passenger:false, toast:null, favorites:{}, compactCards:false };
+
+  glassStyle(tint, extra) {
+    const dark = this.state.dark;
+    const forceSolid = this.state.context === 'moving';
+    if (forceSolid) {
+      const g = dark ? GLASS_DARK : GLASS_LIGHT;
+      return Object.assign({ background: g.fallbackSurface, border:`1px solid ${dark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)'}`, boxShadow:'0 1px 2px rgba(0,0,0,0.10)' }, extra);
+    }
+    return this.glassStyleForced(tint, dark, extra);
+  }
+
+  glassStyleForced(tint, dark, extra) {
+    const g = dark ? GLASS_DARK : GLASS_LIGHT;
+    const blur = { thin:'16px', regular:'26px', thick:'38px' }[tint] || '26px';
+    const sheen = dark
+      ? 'linear-gradient(165deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.03) 32%, rgba(255,255,255,0) 60%)'
+      : 'linear-gradient(165deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.18) 32%, rgba(255,255,255,0) 62%)';
+    return Object.assign({
+      backgroundColor: g['tint' + tint[0].toUpperCase() + tint.slice(1)],
+      backgroundImage: sheen,
+      backdropFilter: `blur(${blur}) saturate(165%)`, WebkitBackdropFilter: `blur(${blur}) saturate(165%)`,
+      border: `1px solid ${g.border}`,
+      boxShadow: `inset 0 1.5px 0 ${g.highlight}, inset 0 -1px 0 rgba(0,0,0,0.03), 0 10px 30px ${g.shadow}, 0 1px 3px ${g.shadow}`,
+    }, extra);
+  }
+
+  heroGradient(idx, dark) {
+    const pairs = [ [ '#E8580C', '#1F6FEB' ], [ '#1F6FEB', '#E8580C' ], [ '#C6480A', '#1E7A46' ], [ '#B26A00', '#E8580C' ] ];
+    const [a, b] = pairs[idx % pairs.length];
+    const base = dark ? '#0C0B08' : '#241F16';
+    return `radial-gradient(circle at 28% 22%, rgba(255,255,255,0.28), transparent 45%), linear-gradient(135deg, ${a} 0%, ${b} 58%, ${base} 115%)`;
+  }
+
+  heroPanelStyle(extra) {
+    return Object.assign({
+      backgroundColor: 'rgba(16,16,15,0.36)',
+      backgroundImage: 'linear-gradient(180deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.7) 100%)',
+      backdropFilter: 'blur(26px) saturate(190%)', WebkitBackdropFilter: 'blur(26px) saturate(190%)',
+      borderTop: '1px solid rgba(255,255,255,0.16)',
+    }, extra);
+  }
+
+  frostChipStyle(extra) {
+    return Object.assign({
+      background: 'rgba(255,224,196,0.16)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
+      border: '1px solid rgba(255,214,178,0.28)', boxShadow: 'inset 0 1px 0 rgba(255,236,220,0.22)',
+    }, extra);
+  }
+
+  toast_(msg) { this.setState({ toast: msg }); setTimeout(() => this.setState(s => s.toast === msg ? { toast: null } : null), 1700); }
+
+  renderVals() {
+    const s = this.state;
+    const t = s.dark ? DARK : LIGHT;
+    const g = s.dark ? GLASS_DARK : GLASS_LIGHT;
+    const isMoving = s.context === 'moving', isParked = s.context === 'parked', isPassenger = s.context === 'passenger';
+    const isRich = isParked || isPassenger;
+    const scale = s.largeText ? 1.65 : 1;
+
+    const steps = [
+      ['S1','S1 · Entry'], ['S2','S2 · Mode select'], ['S3','S3 · Permission'], ['RADAR','S6/S7 · Radar'], ['S11','S11 · Stationary split'],
+    ].map(([id,label]) => ({ label, onClick: () => this.setState({ screen:id }), style: {
+      padding:'9px 12px', borderRadius:9, font:'600 12.5px Inter,sans-serif', cursor:'pointer',
+      background: s.screen===id ? '#1A1A17' : 'transparent', color: s.screen===id ? '#fff' : '#4A463C',
+    }}));
+
+    const contextOptions = [['parked','Parked'],['moving','Moving'],['passenger','Passenger']].map(([v,label]) => ({
+      label, onClick: () => this.setState({ context:v }),
+      style: { flex:1, textAlign:'center', padding:'7px 4px', borderRadius:9, font:'600 12px Inter,sans-serif', cursor:'pointer',
+        background: s.context===v ? '#E8580C' : 'transparent', color: s.context===v ? '#fff' : '#5B5850' },
+    }));
+
+    const railStyle = { width:280, flexShrink:0, background:'#F6F4EF', borderRight:'1px solid rgba(0,0,0,0.08)', padding:'22px 18px', display:'flex', flexDirection:'column', gap:16, height:'100vh', boxSizing:'border-box', position:'sticky', top:0, overflowY:'auto' };
+    const railSectionLabelStyle = { font:'700 10.5px Inter,sans-serif', letterSpacing:'0.06em', color:'#9A9484', textTransform:'uppercase', marginTop:4 };
+    const toggleRowStyle = { display:'flex', justifyContent:'space-between', alignItems:'center', font:'500 13px Inter,sans-serif', color:'#3A362C' };
+    const mapFailDisabled = !(s.screen==='RADAR' && s.radarView==='map');
+    const mapFailRowStyle = Object.assign({}, toggleRowStyle, { opacity: mapFailDisabled ? 0.4 : 1 });
+    const workspaceStyle = { display:'flex', minHeight:'100vh', fontFamily:'Inter,system-ui,sans-serif' };
+    const stageStyle = { flex:1, display:'flex', alignItems:'flex-start', justifyContent:'center', padding:'48px 24px', minHeight:'100vh', boxSizing:'border-box' };
+    const frameShadowStyle = { flexShrink:0 };
+    const captionStyle = { font:'500 10.5px ui-monospace,monospace', color: s.dark ? 'rgba(255,255,255,0.4)':'rgba(0,0,0,0.35)', padding:'10px 20px 18px', textAlign:'center' };
+    const captionFooterStyle = Object.assign({}, captionStyle, { padding:'0 4px 2px', color: s.dark?'rgba(255,255,255,0.5)':'rgba(20,19,15,0.45)' });
+
+    // S1
+    const s1WrapStyle = { height:'100%', position:'relative', color:'#fff', overflow:'hidden' };
+    const s1HeroWrapStyle = { position:'absolute', inset:0, zIndex:0, backgroundImage:this.heroGradient(0, s.dark) };
+    const s1HeroImgStyle = { width:'100%', height:'100%' };
+    const s1ScrimStyle = { display:'none' };
+    const s1ContentStyle = Object.assign(this.heroPanelStyle({ position:'absolute', left:0, right:0, bottom:0, maxHeight:'72%', zIndex:2, display:'flex', flexDirection:'column', gap:10, padding:'20px 26px 26px', boxSizing:'border-box', borderRadius:'26px 26px 0 0', overflow:'visible' }));
+    const s1BadgeStyle = { font:'800 15px Inter,sans-serif', color:t.brand==='#E8580C'?'#FF8A42':t.brand, letterSpacing:'-0.02em', marginBottom:2 };
+    const s1HeadlineStyle = { font:'700 30px/36px Inter,sans-serif', letterSpacing:'-0.015em', textShadow:'0 2px 16px rgba(0,0,0,0.3)' };
+    const s1BodyStyle = { font:'400 16px/24px Inter,sans-serif', color:'rgba(255,255,255,0.82)' };
+    const s1FootnoteStyle = { font:'400 12.5px/18px Inter,sans-serif', color:'rgba(255,255,255,0.55)', marginTop:6 };
+    const s1BtnStyle = Object.assign(this.glassStyleForced('thick', true, { marginTop:16, textAlign:'center', padding:'16px 0', borderRadius:999, cursor:'pointer', font:'700 16px Inter,sans-serif', color:'#fff', backgroundColor:t.brand, backgroundImage:'linear-gradient(165deg, rgba(255,255,255,0.35), rgba(255,255,255,0) 60%)' }));
+
+    // S2
+    const s2WrapStyle = { height:'100%', background:t.bg, color:t.textPrimary, boxSizing:'border-box', display:'flex', flexDirection:'column' };
+    const s2TitleStyle = { font:'700 23px/29px Inter,sans-serif', marginBottom:0, letterSpacing:'-0.01em', padding:'66px 20px 0' };
+    const s2SpacerStyle = { flex:1, minHeight:20 };
+    const s2ChoicePanelStyle = { background:t.surfaceRaised, borderRadius:'26px 26px 0 0', padding:'18px 20px 24px', boxShadow:`0 -10px 28px rgba(20,19,15,${s.dark?0.35:0.12})`, display:'flex', flexDirection:'column', gap:14, border:`1px solid ${t.border}`, borderBottom:'none' };
+    const s2CardActiveStyle = { position:'relative', height:312, borderRadius:22, overflow:'hidden', cursor:'pointer', boxShadow:'0 14px 32px rgba(20,19,15,0.22)', transition:'transform 180ms cubic-bezier(0.2,0,0,1)' };
+    const s2CardActiveHoverStyle = { transform:'scale(1.015)', boxShadow:'0 18px 40px rgba(20,19,15,0.28)' };
+    const s2CardImgStyle = { position:'absolute', inset:0, zIndex:0, backgroundImage:this.heroGradient(1, s.dark) };
+    const s2CardScrimStyle = { display:'none' };
+    const s2CardContentStyle = Object.assign(this.heroPanelStyle({ position:'absolute', left:0, right:0, bottom:0, maxHeight:'75%', zIndex:2, display:'flex', flexDirection:'column', justifyContent:'center', padding:'16px 18px 18px', gap:5, color:'#fff', boxSizing:'border-box', borderRadius:'0 0 22px 22px' }));
+    const s2CardDisabledStyle = { borderRadius:20, padding:18, display:'flex', flexDirection:'column', gap:6, background:t.surfaceSunken, border:`1px solid ${t.border}`, opacity:0.55 };
+    const s2CardEyebrowStyle = { font:'800 11px Inter,sans-serif', letterSpacing:'0.08em', color:t.brand==='#E8580C'?'#FF9A5E':t.brand };
+    const s2CardEyebrowLightStyle = { font:'700 11px Inter,sans-serif', letterSpacing:'0.06em', color:t.brand };
+    const s2CardTitleStyle = { font:'700 19px/25px Inter,sans-serif', textShadow:'0 2px 10px rgba(0,0,0,0.35)' };
+    const s2CardTitleDarkStyle = { font:'600 18px/24px Inter,sans-serif' };
+    const s2CardBodyStyle = { font:'400 13px/18px Inter,sans-serif', color:'rgba(255,255,255,0.85)', display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' };
+    const s2CardBodyDarkStyle = { font:'400 14px/20px Inter,sans-serif', color:t.textSecondary };
+    const s2CardCtaStyle = this.frostChipStyle({ alignSelf:'flex-start', marginTop:6, padding:'7px 14px', borderRadius:999, font:'700 12.5px Inter,sans-serif', color:'#fff' });
+    const s2FooterLinkStyle = { font:'600 13px Inter,sans-serif', color:t.textSecondary, textAlign:'center', marginTop:4, textDecoration:'underline', cursor:'pointer' };
+
+    // S3
+    const scrimFullStyle = { position:'absolute', inset:0, background:g.scrim, display:'flex', alignItems:'flex-end', zIndex:30 };
+    const sheetGrabberStyle = { width:36, height:4, borderRadius:4, background: s.dark?'rgba(255,255,255,0.25)':'rgba(0,0,0,0.18)', margin:'0 auto 10px' };
+    const s3SheetStyle = Object.assign(this.glassStyleForced('regular', s.dark), { width:'100%', boxSizing:'border-box', borderRadius:'26px 26px 0 0', padding:'12px 22px 22px', color:t.textPrimary });
+    const s3IconStyle = { font:'400 30px sans-serif', color:t.brand, marginBottom:4 };
+    const s3TitleStyle = { font:'700 20px/26px Inter,sans-serif', marginBottom:8 };
+    const s3BodyStyle = { font:'400 14.5px/21px Inter,sans-serif', color:t.textSecondary, marginBottom:18 };
+    const s3BtnPrimaryStyle = { background:t.brand, color:t.onBrand, font:'700 16px Inter,sans-serif', textAlign:'center', padding:'15px 0', borderRadius:999, cursor:'pointer', marginBottom:10 };
+    const s3BtnSecondaryStyle = { font:'600 14px Inter,sans-serif', color:t.textSecondary, textAlign:'center', padding:'6px 0', cursor:'pointer' };
+
+    // Radar chrome
+    const radarRootStyle = { height:'100%', position:'relative', overflow:'hidden', backgroundColor:t.bg,
+      backgroundImage:`radial-gradient(circle at 20% 0%, ${s.dark?'rgba(255,122,51,0.16)':'rgba(232,88,12,0.10)'}, transparent 45%), radial-gradient(circle at 85% 15%, ${s.dark?'rgba(91,155,255,0.16)':'rgba(31,111,235,0.10)'}, transparent 45%)` };
+    const bottomControlsStyle = { position:'absolute', left:10, right:10, bottom: isMoving?28:20, zIndex:10, display:'flex', flexDirection:'column', gap:10 };
+    const topBarStyle = Object.assign(this.glassStyle('regular', { display:'flex', alignItems:'center', justifyContent:'space-between', padding:'8px 10px', borderRadius:22, boxShadow:'0 4px 14px rgba(20,19,15,0.14)' }));
+    const segmentedWrapStyle = { display:'flex', background: s.dark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)', borderRadius:999, padding:3, gap:2 };
+    const radarViewOptions = [['map','Map'],['ahead','Ahead']].map(([v,label]) => ({
+      label, onClick: () => this.setState({ radarView:v }),
+      style: { padding: isMoving ? '10px 18px' : '7px 16px', borderRadius:999, font: isMoving ? '700 15px Inter,sans-serif' : '600 13px Inter,sans-serif', cursor:'pointer',
+        background: s.radarView===v ? t.brand : 'transparent', color: s.radarView===v ? t.onBrand : t.textSecondary },
+    }));
+    const stopBtnStyle = { font:'700 13px Inter,sans-serif', color:t.statusError, padding:'8px 10px', cursor:'pointer' };
+    const bannerVisible = s.mapFailed && s.radarView==='map';
+    const bannerStyle = { position:'absolute', top:60, left:10, right:10, zIndex:11, background: t.statusWarning, color:'#fff', font:'600 12.5px/17px Inter,sans-serif', padding:'9px 12px', borderRadius:12, display:'flex', justifyContent:'space-between', gap:8 };
+    const bannerRetryStyle = { textDecoration:'underline', fontWeight:700, whiteSpace:'nowrap', cursor:'pointer' };
+    const filterRowStyle = { position:'absolute', top: bannerVisible?110:60, left:0, right:0, zIndex:9, display:'flex', gap:8, padding:'0 14px', overflowX:'auto' };
+    const chipStyleBase = (rich) => Object.assign(this.glassStyle('regular', { padding: isMoving && !rich ? '11px 18px' : '8px 15px', borderRadius:999, font: isMoving && !rich ? '700 14px Inter,sans-serif' : '600 12.5px Inter,sans-serif', color:t.textPrimary, whiteSpace:'nowrap', cursor:'pointer', boxShadow:'0 2px 6px rgba(20,19,15,0.10)' }));
+    const filterChips = ['Open now','Cuisine','Under 15 min'].map(label => ({ label, style: chipStyleBase(false), styleRich: this.glassStyleForced('regular', s.dark, { padding:'9px 17px', borderRadius:999, font:'600 13px Inter,sans-serif', color:t.textPrimary, cursor:'pointer', boxShadow:'0 2px 6px rgba(20,19,15,0.10)' }) }));
+
+    const showMap = s.radarView==='map' && !bannerVisible;
+    const showAhead = s.radarView==='ahead' || bannerVisible;
+
+    const mapCanvasStyle = { position:'absolute', inset:0, backgroundColor: s.dark?'#1B2019':'#DCE4D6',
+      backgroundImage:`radial-gradient(circle at 30% 20%, ${s.dark?'rgba(91,155,255,0.18)':'rgba(31,111,235,0.14)'}, transparent 55%), radial-gradient(circle at 75% 65%, ${s.dark?'rgba(255,122,51,0.16)':'rgba(232,88,12,0.12)'}, transparent 50%), repeating-linear-gradient(0deg, transparent 0 38px, ${s.dark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)'} 38px 39px), repeating-linear-gradient(90deg, transparent 0 38px, ${s.dark?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.07)'} 38px 39px)` };
+    const mapTileLabelStyle = { position:'absolute', left:12, bottom:44, font:'600 10px ui-monospace,monospace', color: s.dark?'rgba(255,255,255,0.35)':'rgba(0,0,0,0.3)', letterSpacing:'0.05em', textTransform:'uppercase' };
+    const currentLocationDotStyle = { position:'absolute', left:'50%', top:'78%', width:16, height:16, borderRadius:'50%', background:t.currentLocation, border:'3px solid white', boxShadow:'0 0 0 2px rgba(0,0,0,0.08)', transform:'translate(-50%,-50%)' };
+    const currentLocationConeStyle = { position:'absolute', left:'50%', top:'50%', width:0, height:0, borderLeft:'14px solid transparent', borderRight:'14px solid transparent', borderBottom:`26px solid ${t.currentLocation}`, opacity:0.25, transform:'translate(-50%,-100%) rotate(-20deg)' };
+    const recenterBtnStyle = Object.assign(this.glassStyle('regular', { boxShadow:'0 3px 10px rgba(20,19,15,0.16)', position:'absolute', right:14, bottom: isMoving?180:170, width: isMoving?56:44, height: isMoving?56:44, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', font:'600 20px sans-serif', color:t.textPrimary, cursor:'pointer' }));
+    const thumbLabelStyle = { font:'700 8.5px ui-monospace,monospace', color: s.dark?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.32)', letterSpacing:'0.07em', textTransform:'uppercase' };
+
+    const openVenue = (v) => this.setState({ selectedVenueId:v.id });
+    const spotlightV = VENUES[0];
+    const spotlightVisible = showMap && isRich && !bannerVisible;
+    const spotlightStyle = Object.assign(this.glassStyle('thick', { position:'absolute', left:14, right:14, bottom:150, zIndex:8, display:'flex', alignItems:'center', gap:12, padding:10, borderRadius:20, cursor:'pointer', boxShadow:'0 6px 18px rgba(20,19,15,0.18)' }));
+    const spotlightThumbWrapStyle = { width:56, height:56, borderRadius:14, overflow:'hidden', flexShrink:0, backgroundImage:this.heroGradient(0, s.dark) };
+    const spotlightTextColStyle = { flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:2 };
+    const spotlightNameStyle = { font:'700 15px Inter,sans-serif', color:t.textPrimary };
+    const spotlightMetaStyle = { font:'500 12px Inter,sans-serif', color:t.textSecondary, display:'flex', alignItems:'center' };
+    const spotlightTimeStyle = { font:'700 14px ui-monospace,monospace', color:t.brand, fontVariantNumeric:'tabular-nums', flexShrink:0 };
+    const spotlightVenue = { name: spotlightV.name, minsAhead: spotlightV.minsAhead, metaLine:`${spotlightV.cuisine} · ${spotlightV.open?'Open':'Closed'}`,
+      statusDotStyle: { display:'inline-block', width:6, height:6, borderRadius:'50%', background: spotlightV.open?t.statusOpen:t.statusClosed, marginRight:5 } };
+    const spotlightOnClick = () => openVenue(spotlightV);
+    const markers = VENUES.map(v => ({
+      id:v.id, onClick: v.behind ? undefined : () => openVenue(v), pulse: v.id==='v1',
+      wrapStyle: { position:'absolute', left:v.x+'%', top:v.y+'%', transform:'translate(-50%,-50%)', cursor: v.behind?'default':'pointer' },
+      pulseStyle: { position:'absolute', left:'50%', top:'50%', width:14, height:14, borderRadius:'50%', background:t.markerSelected, transform:'translate(-50%,-50%)', animation:'fm-pulse 1.8s ease-out infinite' },
+      pinStyle: { position:'relative', width: v.id==='v1' ? 18 : (v.behind?10:14), height: v.id==='v1' ? 18 : (v.behind?10:14), borderRadius:'50%',
+        background: v.behind ? t.markerBehind : (v.id==='v1' ? t.markerSelected : t.markerUnselected), border:'2px solid white', boxShadow:'0 1px 4px rgba(0,0,0,0.3)' },
+    }));
+
+    const rowsSource = VENUES.filter(v => !v.behind);
+    const isFav = (id) => !!s.favorites[id];
+    const toggleFav = (id) => (e) => { e.stopPropagation(); this.setState(st => ({ favorites: Object.assign({}, st.favorites, { [id]: !st.favorites[id] }) })); };
+    const aheadRows = rowsSource.map((v, vi) => ({
+      id:v.id, onClick: () => openVenue(v), name:v.name, minsAhead: isMoving ? v.minsAhead.replace(' ahead','') : v.minsAhead,
+      richCard: isRich, compactCard: !isRich,
+      // compact fields
+      showThumb: false,
+      metaLine: `${v.cuisine} · ${v.open ? 'Open' : 'Closed'}`, statusDotStyle: { display:'inline-block', width:7, height:7, borderRadius:'50%', background: v.open?t.statusOpen:t.statusClosed, marginRight:6 },
+      showSub: false, sub: `${v.address} · ★ ${v.rating}`,
+      rowStyle: { display:'flex', alignItems:'center', gap:12, padding: isMoving ? '16px 16px' : '13px 16px', minHeight: isMoving ? 56 : 44, borderBottom:`1px solid ${t.border}`, cursor:'pointer', background:t.bg, boxShadow:`inset 0 1px 0 rgba(255,255,255,${s.dark?0.04:0.5})` },
+      textColStyle: { flex:1, minWidth:0, display:'flex', flexDirection:'column', gap:2 },
+      nameStyle: { font:`700 ${Math.round((isMoving?20:17)*scale)}px/1.25 Inter,sans-serif`, color:t.textPrimary, whiteSpace:'normal' },
+      metaStyle: { font:`500 ${Math.round(13*scale)}px/1.3 Inter,sans-serif`, color:t.textSecondary, display:'flex', alignItems:'center' },
+      subStyle: { font:`400 ${Math.round(12*scale)}px/1.3 Inter,sans-serif`, color:t.textSecondary, opacity:0.85 },
+      aheadTimeStyle: { font:`700 ${Math.round((isMoving?18:15)*scale)}px ui-monospace,monospace`, color:t.brand, fontVariantNumeric:'tabular-nums', flexShrink:0 },
+      // rich image-card fields
+      cardWrapStyle: { position:'relative', height: s.compactCards?128:262, borderRadius:20, overflow:'hidden', cursor:'pointer', boxShadow:'0 10px 26px rgba(20,19,15,0.18)', margin:'0 14px 14px' },
+      cardHoverStyle: { boxShadow:'0 16px 34px rgba(20,19,15,0.26)', transform:'translateY(-2px)' },
+      heroImgStyle: { position:'absolute', inset:0, backgroundImage:this.heroGradient(vi, s.dark) },
+      cardScrimStyle: { display:'none' },
+      cardTopRowStyle: { position:'absolute', top:10, left:10, right:10, zIndex:3, display:'flex', justifyContent:'space-between', alignItems:'flex-start' },
+      statusPillStyle: this.frostChipStyle({ padding:'5px 10px', borderRadius:999, font:'600 11.5px Inter,sans-serif', color:'#fff', display:'flex', alignItems:'center', whiteSpace:'nowrap', maxWidth:'70%', overflow:'hidden', textOverflow:'ellipsis' }),
+      statusDotWhiteStyle: { display:'inline-block', width:6, height:6, borderRadius:'50%', background: v.open?'#7CE0A6':'#D8D4C9', marginRight:5 },
+      heartBtnStyle: this.frostChipStyle({ width:30, height:30, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color: isFav(v.id) ? '#FF8A42' : '#fff', font:'15px sans-serif' }),
+      onToggleFav: toggleFav(v.id), favLabel: isFav(v.id) ? '♥' : '♡',
+      cardBottomStyle: Object.assign(this.heroPanelStyle({ position:'absolute', bottom:0, left:0, right:0, height: s.compactCards?52:158, overflow:'hidden', zIndex:2, padding: s.compactCards?'6px 12px':'11px 14px 12px', display:'flex', flexDirection:'column', justifyContent:'center', gap: s.compactCards?2:5, color:'#fff', boxSizing:'border-box', borderRadius:'0 0 20px 20px' })),
+      cardNameRowStyle: { display:'flex', alignItems:'baseline', gap:8, minWidth:0 },
+      cardNameStyle: { font: s.compactCards?'700 15px/19px Inter,sans-serif':'700 18px/22px Inter,sans-serif', textShadow:'0 2px 10px rgba(0,0,0,0.4)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', flex:1, minWidth:0 },
+      aheadPillStyle: { backgroundColor:'rgba(232,88,12,0.85)', backdropFilter:'blur(10px) saturate(160%)', WebkitBackdropFilter:'blur(10px) saturate(160%)', border:'1px solid rgba(255,255,255,0.3)', boxShadow:'inset 0 1px 0 rgba(255,255,255,0.35)', padding:'3px 9px', borderRadius:999, font:'700 11px ui-monospace,monospace', color:'#fff', fontVariantNumeric:'tabular-nums', whiteSpace:'nowrap', flexShrink:0 },
+      cardMetaStyle: { font:'500 12px Inter,sans-serif', color:'rgba(255,255,255,0.88)' },
+      showTagsActions: !s.compactCards,
+      cardTagsRowStyle: { display:'flex', gap:6, marginTop:1, overflow:'hidden', maxHeight:20 },
+      tags: v.tags.slice(0,2).map(tag => ({ label: tag, style: this.frostChipStyle({ padding:'3px 9px', borderRadius:999, font:'600 10px Inter,sans-serif', color:'#fff', whiteSpace:'nowrap', flexShrink:0 }) })),
+      cardActionsRowStyle: { display:'flex', gap:8, marginTop:5 },
+      quickNavBtnStyle: { background:t.brand, color:'#fff', font:'700 12.5px Inter,sans-serif', padding:'8px 14px', borderRadius:10, cursor:'pointer' },
+      quickMenuBtnStyle: this.frostChipStyle({ color:'#fff', font:'700 12.5px Inter,sans-serif', padding:'8px 14px', borderRadius:10, cursor:'pointer' }),
+      linked: v.linked,
+      onQuickNav: (e) => { e.stopPropagation(); openVenue(v); this.setState({ navChooserOpen:true }); },
+      onQuickMenu: (e) => { e.stopPropagation(); openVenue(v); this.setState({ heraldOpen:true }); },
+    }));
+    const aheadListStyle = { position:'absolute', top: (bannerVisible?110:60) + 46, left:0, right:0, bottom: isMoving?160:150, overflowY:'auto', paddingBottom:12, paddingTop: isRich?8:0 };
+
+    // S14 sheet
+    const sel = VENUES.find(v => v.id === s.selectedVenueId);
+    const sheetVisible = !!sel;
+    const sheetVenue = sel ? {
+      name: sel.name, minsAhead: sel.minsAhead, linked: sel.linked,
+      metaLine: `${sel.cuisine} · ${sel.open?'Open':'Closed'}`, statusDotStyle:{ display:'inline-block', width:8, height:8, borderRadius:'50%', background: sel.open?t.statusOpen:t.statusClosed, marginRight:7 },
+      showSub: isRich, sub: `${sel.address} · ★ ${sel.rating} · ${sel.price} · ${sel.hours}`, sourceBadge: sel.linked ? 'Linked via Herald' : 'External listing',
+      showThumb: isRich, thumbWrapStyle: { position:'relative', height:150, borderRadius:18, overflow:'hidden', marginBottom:12 },
+      thumbImgStyle: { position:'absolute', inset:0, backgroundImage:this.heroGradient(VENUES.indexOf(sel), s.dark) },
+      thumbScrimStyle: { position:'absolute', inset:0, background:'linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(10,9,6,0.55) 100%)' },
+      favLabel: isFav(sel.id) ? '♥' : '♡', onToggleFav: toggleFav(sel.id),
+      heartBtnStyle: Object.assign(this.glassStyleForced('thin', true, { position:'absolute', top:10, right:10, width:34, height:34, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color: isFav(sel.id) ? t.brand : '#fff', font:'17px sans-serif' })),
+      tags: sel.tags.map(tag => ({ label: tag, style: { background:t.surfaceSunken, border:`1px solid ${t.border}`, padding:'4px 10px', borderRadius:999, font:'600 11px Inter,sans-serif', color:t.textSecondary } })),
+    } : {};
+    const sheetOuterStyle = Object.assign(this.glassStyle('thick'), { width:'100%', boxSizing:'border-box', borderRadius:'26px 26px 0 0', padding:'12px 20px 24px' });
+    const platesStyle = { background:t.bg, border:`1px solid ${t.border}`, borderRadius:16, padding:'14px 16px', display:'flex', flexDirection:'column', gap:8, boxShadow:`inset 0 1px 0 rgba(255,255,255,${s.dark?0.05:0.6})` };
+    const sheetNameRowStyle = { display:'flex', justifyContent:'space-between', alignItems:'baseline', gap:10 };
+    const sheetNameStyle = { font:'700 20px/25px Inter,sans-serif', color:t.textPrimary, letterSpacing:'-0.01em' };
+    const sheetTimeStyle = { font:'700 16px ui-monospace,monospace', color:t.brand, fontVariantNumeric:'tabular-nums', whiteSpace:'nowrap' };
+    const sheetMetaStyle = { font:'500 13px Inter,sans-serif', color:t.textSecondary, display:'flex', alignItems:'center' };
+    const sheetSubStyle = { font:'400 12.5px Inter,sans-serif', color:t.textSecondary, opacity:0.85 };
+    const sheetTagsRowStyle = { display:'flex', gap:6, flexWrap:'wrap', marginTop:2 };
+    const sheetBadgeStyle = { alignSelf:'flex-start', marginTop:4, font:'600 10.5px Inter,sans-serif', color:t.textSecondary, background:t.surfaceSunken, padding:'4px 9px', borderRadius:999 };
+    const sheetActionsRowStyle = { display:'flex', gap:10, marginTop:14 };
+    const sheetNavBtnStyle = { flex:1, background:t.brand, color:t.onBrand, font:'700 15px Inter,sans-serif', textAlign:'center', padding:'14px 0', borderRadius:14, cursor:'pointer' };
+    const sheetMenuBtnStyle = { flex:1, background:t.surfaceSunken, color:t.textPrimary, font:'700 15px Inter,sans-serif', textAlign:'center', padding:'14px 0', borderRadius:14, cursor:'pointer', border:`1px solid ${t.border}` };
+    const sheetDismissStyle = { textAlign:'center', font:'600 13px Inter,sans-serif', color:t.textSecondary, marginTop:14, cursor:'pointer' };
+
+    // S16 nav chooser
+    const navSheetStyle = Object.assign(this.glassStyle('regular'), { width:'100%', boxSizing:'border-box', borderRadius:'26px 26px 0 0', padding:'12px 20px 22px' });
+    const navTitleStyle = { font:'700 16px Inter,sans-serif', color:t.textPrimary, marginBottom:10 };
+    const navOptions = ['Google Maps','Apple Maps','Copy address'].map(label => ({
+      label, onClick: () => { this.setState({ navChooserOpen:false, selectedVenueId:null }); this.toast_(label==='Copy address' ? 'Address copied' : `Opening ${label}…`); },
+      style: { background:t.surface, color:t.textPrimary, font:'600 15px Inter,sans-serif', padding:'15px 4px', borderBottom:`1px solid ${t.border}`, cursor:'pointer' },
+    }));
+
+    // Herald
+    const heraldVisible = s.heraldOpen;
+    const heraldRootStyle = { position:'absolute', inset:0, background:t.bg, zIndex:35, display:'flex', flexDirection:'column', padding:'0 18px 18px' };
+    const heraldHeaderStyle = { display:'flex', flexDirection:'column', gap:2, padding:'10px 0 14px' };
+    const heraldBackStyle = { font:'600 13px Inter,sans-serif', color:t.statusInfo, cursor:'pointer' };
+    const heraldWordmarkStyle = { font:'800 20px Inter,sans-serif', color:t.textPrimary, letterSpacing:'-0.02em' };
+    const heraldVenueNameStyle = { font:'700 20px Inter,sans-serif', color:t.textPrimary };
+    const heraldSubStyle = { font:'500 13px Inter,sans-serif', color:t.textSecondary, marginBottom:10 };
+    const heraldRowStyle = { display:'flex', justifyContent:'space-between', padding:'13px 0', borderBottom:`1px solid ${t.border}` };
+    const heraldItemNameStyle = { font:'600 15px Inter,sans-serif', color:t.textPrimary };
+    const heraldItemPriceStyle = { font:'600 14px ui-monospace,monospace', color:t.textSecondary };
+    const heraldCtaStyle = { marginTop:'auto', background:t.brand, color:t.onBrand, font:'700 16px Inter,sans-serif', textAlign:'center', padding:'15px 0', borderRadius:999, cursor:'pointer' };
+
+    const toastStyle = { position:'absolute', bottom:100, left:'50%', transform:'translateX(-50%)', background: s.dark?'#F5F2EA':'#1A1A17', color: s.dark?'#1A1A17':'#F5F2EA', font:'600 13px Inter,sans-serif', padding:'10px 18px', borderRadius:999, zIndex:50, whiteSpace:'nowrap', boxShadow:'0 6px 20px rgba(0,0,0,0.25)' };
+
+    // S11
+    const s11FrameStyle = { width:1100, height:680, borderRadius:20, background:t.bg, boxShadow:'0 30px 70px rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.08)', overflow:'hidden', display:'flex', flexDirection:'column', color:t.textPrimary };
+    const s11HeaderStyle = Object.assign(this.glassStyleForced('regular', s.dark, { display:'flex', alignItems:'center', gap:16, padding:'16px 22px', position:'relative', zIndex:5, borderRadius:0 }));
+    const s11BackStyle = { font:'600 13px Inter,sans-serif', color:t.statusInfo, cursor:'pointer' };
+    const s11TitleStyle = { font:'700 15px Inter,sans-serif', flex:1 };
+    const s11PassengerToggleStyle = { display:'flex', alignItems:'center', gap:8, font:'600 13px Inter,sans-serif', color:t.textSecondary };
+    const s11BodyStyle = { flex:1, display:'flex', minHeight:0 };
+    const s11MapPaneStyle = { width:'46%', position:'relative', backgroundColor: s.dark?'#1B2019':'#DCE4D6',
+      backgroundImage:`repeating-linear-gradient(0deg, transparent 0 42px, ${s.dark?'rgba(255,255,255,0.05)':'rgba(0,0,0,0.05)'} 42px 43px), repeating-linear-gradient(90deg, transparent 0 42px, ${s.dark?'rgba(255,255,255,0.05)':'rgba(0,0,0,0.05)'} 42px 43px)` };
+    const s11ListPaneStyle = { width:'54%', overflowY:'auto', padding:'16px 20px', display:'flex', flexDirection:'column', gap:12, position:'relative', backgroundColor:t.bg,
+      backgroundImage:`radial-gradient(circle at 10% 0%, ${s.dark?'rgba(255,122,51,0.14)':'rgba(232,88,12,0.09)'}, transparent 40%)` };
+    const s11FilterRowStyle = { display:'flex', gap:8, marginBottom:6 };
+    const s11Markers = VENUES.map(v => ({
+      pulse: v.id==='v1',
+      wrapStyle: { position:'absolute', left:v.x+'%', top:v.y+'%', transform:'translate(-50%,-50%)', display:'flex', flexDirection:'column', alignItems:'center', gap:4 },
+      pulseStyle: { position:'absolute', left:6, top:6, width:16, height:16, borderRadius:'50%', background:t.markerSelected, animation:'fm-pulse 1.8s ease-out infinite' },
+      pinStyle: { width: v.id==='v1'?20:(v.behind?11:15), height: v.id==='v1'?20:(v.behind?11:15), borderRadius:'50%', background: v.behind?t.markerBehind:(v.id==='v1'?t.markerSelected:t.markerUnselected), border:'2px solid white', boxShadow:'0 1px 4px rgba(0,0,0,0.3)' },
+      label: v.name, labelStyle: { font:'600 10.5px Inter,sans-serif', background: s.dark?'rgba(20,19,15,0.75)':'rgba(255,255,255,0.85)', color:t.textPrimary, padding:'2px 6px', borderRadius:6, whiteSpace:'nowrap' },
+    }));
+    const s11Rows = VENUES.filter(v => !v.behind).map((v, vi) => ({
+      cardStyle: { display:'flex', gap:0, borderRadius:18, overflow:'hidden', background:t.bg, border:`1px solid ${t.border}`, boxShadow:`0 4px 14px rgba(20,19,15,0.10)`, cursor:'pointer' },
+      cardHoverStyle: { boxShadow:'0 10px 26px rgba(20,19,15,0.18)', transform:'translateY(-1px)' },
+      thumbWrapStyle: { position:'relative', width:140, flexShrink:0 },
+      thumbImgStyle: { position:'absolute', inset:0, backgroundImage:this.heroGradient(vi, s.dark) },
+      thumbBadgeStyle: { position:'absolute', bottom:8, left:8, background:t.brand, color:'#fff', font:'700 11.5px ui-monospace,monospace', padding:'4px 9px', borderRadius:999, fontVariantNumeric:'tabular-nums' },
+      textColStyle: { flex:1, display:'flex', flexDirection:'column', gap:5, minWidth:0, padding:'14px 16px' },
+      nameRowStyle: { display:'flex', justifyContent:'space-between', gap:8, alignItems:'flex-start' },
+      nameStyle: { font:'700 16.5px Inter,sans-serif', color:t.textPrimary, letterSpacing:'-0.005em' }, minsAhead: v.minsAhead,
+      favLabel: isFav(v.id) ? '♥' : '♡', onToggleFav: toggleFav(v.id),
+      heartBtnStyle: { color: isFav(v.id) ? t.brand : t.textSecondary, cursor:'pointer', font:'16px sans-serif', flexShrink:0 },
+      metaLine: `${v.cuisine} · ${v.open?'Open':'Closed'}`, statusDotStyle:{ display:'inline-block', width:7, height:7, borderRadius:'50%', background: v.open?t.statusOpen:t.statusClosed, marginRight:6 },
+      metaStyle: { font:'500 13px Inter,sans-serif', color:t.textSecondary, display:'flex', alignItems:'center' },
+      sub: `${v.address} · ★ ${v.rating} · ${v.price} · ${v.hours}`, subStyle: { font:'400 12px Inter,sans-serif', color:t.textSecondary, opacity:0.85 },
+      tags: v.tags.map(tag => ({ label: tag, style:{ background:t.surfaceSunken, border:`1px solid ${t.border}`, padding:'3px 9px', borderRadius:999, font:'600 10.5px Inter,sans-serif', color:t.textSecondary } })),
+      tagsRowStyle: { display:'flex', gap:6, flexWrap:'wrap', marginTop:1 },
+      linked: v.linked, actionsRowStyle: { display:'flex', gap:8, marginTop:6 },
+      navBtnStyle: { background:t.brand, color:t.onBrand, font:'700 12.5px Inter,sans-serif', padding:'8px 14px', borderRadius:10, cursor:'pointer' },
+      menuBtnStyle: { background:t.surfaceSunken, color:t.textPrimary, font:'700 12.5px Inter,sans-serif', padding:'8px 14px', borderRadius:10, cursor:'pointer', border:`1px solid ${t.border}` },
+    }));
+
+    return {
+      steps, contextOptions, railStyle, railSectionLabelStyle, toggleRowStyle, mapFailRowStyle, mapFailDisabled,
+      workspaceStyle, stageStyle, frameShadowStyle, captionStyle, captionFooterStyle,
+      dark: s.dark, largeText: s.largeText, mapFailed: s.mapFailed, context: s.context, compactCards: s.compactCards,
+      onToggleCompactCards: () => this.setState(st => ({ compactCards: !st.compactCards })),
+      onToggleDark: () => this.setState(st => ({ dark: !st.dark })),
+      onToggleLargeText: () => this.setState(st => ({ largeText: !st.largeText })),
+      onToggleMapFail: () => this.setState(st => ({ mapFailed: !st.mapFailed })),
+      showPhoneFrame: s.screen==='S1'||s.screen==='S2'||s.screen==='S3'||s.screen==='RADAR',
+      showS11: s.screen==='S11',
+      showS1: s.screen==='S1', showS2: s.screen==='S2', showS3: s.screen==='S3', showRadar: s.screen==='RADAR',
+      onContinueS1: () => this.setState({ screen:'S2' }),
+      s1WrapStyle, s1HeroWrapStyle, s1HeroImgStyle, s1ScrimStyle, s1ContentStyle, s1BadgeStyle, s1HeadlineStyle, s1BodyStyle, s1FootnoteStyle, s1BtnStyle,
+      onStartRadar: () => this.setState({ screen:'S3' }),
+      s2WrapStyle, s2TitleStyle, s2SpacerStyle, s2ChoicePanelStyle, s2CardActiveStyle, s2CardActiveHoverStyle, s2CardImgStyle, s2CardScrimStyle, s2CardContentStyle,
+      s2CardDisabledStyle, s2CardEyebrowStyle, s2CardEyebrowLightStyle, s2CardTitleStyle, s2CardTitleDarkStyle, s2CardBodyStyle, s2CardBodyDarkStyle, s2CardCtaStyle, s2FooterLinkStyle,
+      onAllowLocation: () => this.setState({ screen:'RADAR' }),
+      scrimFullStyle, sheetGrabberStyle, s3SheetStyle, s3IconStyle, s3TitleStyle, s3BodyStyle, s3BtnPrimaryStyle, s3BtnSecondaryStyle,
+      radarRootStyle, bottomControlsStyle, topBarStyle, segmentedWrapStyle, radarViewOptions, stopBtnStyle,
+      onStop: () => this.setState({ screen:'S1', selectedVenueId:null, navChooserOpen:false, heraldOpen:false, mapFailed:false }),
+      bannerVisible, bannerStyle, bannerRetryStyle, filterRowStyle, filterChips,
+      showMap, showAhead, mapCanvasStyle, mapTileLabelStyle, currentLocationDotStyle, currentLocationConeStyle, markers, recenterBtnStyle, thumbLabelStyle,
+      aheadListStyle, aheadRows, radarView: s.radarView,
+      spotlightVisible, spotlightStyle, spotlightThumbWrapStyle, spotlightTextColStyle, spotlightNameStyle, spotlightMetaStyle, spotlightTimeStyle, spotlightVenue, spotlightOnClick,
+      sheetVisible, sheetVenue, sheetOuterStyle, platesStyle, sheetNameRowStyle, sheetNameStyle, sheetTimeStyle, sheetMetaStyle, sheetSubStyle, sheetTagsRowStyle, sheetBadgeStyle,
+      sheetActionsRowStyle, sheetNavBtnStyle, sheetMenuBtnStyle, sheetDismissStyle,
+      onCloseSheet: () => this.setState({ selectedVenueId:null }),
+      onOpenNavChooser: () => this.setState({ navChooserOpen:true }),
+      onOpenHerald: () => this.setState({ heraldOpen:true }),
+      stopProp: (e) => e.stopPropagation(),
+      navChooserVisible: s.navChooserOpen, navSheetStyle, navTitleStyle, navOptions,
+      onCancelNav: () => this.setState({ navChooserOpen:false }),
+      heraldVisible, heraldRootStyle, heraldHeaderStyle, heraldBackStyle, heraldWordmarkStyle, heraldVenueNameStyle, heraldSubStyle,
+      heraldItems: HERALD_ITEMS, heraldRowStyle, heraldItemNameStyle, heraldItemPriceStyle, heraldCtaStyle,
+      onBackToFoodMap: () => this.setState({ heraldOpen:false, selectedVenueId:null }),
+      toast: s.toast, toastStyle,
+      s11FrameStyle, s11HeaderStyle, s11BackStyle, s11TitleStyle, s11PassengerToggleStyle, s11Passenger: s.s11Passenger,
+      onToggleS11Passenger: () => this.setState(st => ({ s11Passenger: !st.s11Passenger })),
+      onExitS11: () => this.setState({ screen:'RADAR' }),
+      s11BodyStyle, s11MapPaneStyle, s11ListPaneStyle, s11FilterRowStyle, s11Markers, s11Rows,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

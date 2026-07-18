@@ -32,7 +32,8 @@ test("radar happy path with the simulated driver", async ({ page }) => {
   );
   await expect(card.getByTestId("action-view-menu")).toHaveAttribute("href", /\/r\/burger-town/);
 
-  // Selection is shared with the Map view.
+  // Dismiss the sheet, then switch to the Map view (same candidate collection).
+  await card.getByTestId("venue-card-dismiss").click();
   await page.getByTestId("view-map").click();
   await expect(page.getByTestId("mock-map")).toBeVisible();
 
